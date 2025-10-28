@@ -131,3 +131,4 @@ C:\fullstack-product-app\backend\obj\Debug\net9.0\refint\backend.dll
 C:\fullstack-product-app\backend\obj\Debug\net9.0\backend.pdb
 C:\fullstack-product-app\backend\obj\Debug\net9.0\backend.genruntimeconfig.cache
 C:\fullstack-product-app\backend\obj\Debug\net9.0\ref\backend.dll
+C:\fullstack-product-app\backend\obj\Debug\net9.0\backend.sourcelink.json

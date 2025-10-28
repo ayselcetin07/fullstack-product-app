@@ -1,31 +1,27 @@
-'use client'
-import { useEffect, useState } from 'react'
+import { fetchProducts } from "@/lib/api";
 
 type Product = {
-  id: number
-  name: string
-  price: number
-}
+  id: string;
+  name: string;
+  description?: string;
+  price: number;
+};
 
-export default function ProductList() {
-  const [products, setProducts] = useState<Product[]>([])
-
-  useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/products`)
-      .then(res => res.json())
-      .then(data => setProducts(data))
-  }, [])
+export default async function ProductsPage() {
+  const products: Product[] = await fetchProducts();
 
   return (
-    <div className="p-6">
-      <h1 className=" text-pink-600  text-2xl font-bold mb-4">Ürünler</h1>
+    <main className="p-6">
+      <h1 className="text-2xl font-bold mb-4">Ürünler</h1>
       <ul className="space-y-2">
-        {products.map(p => (
+        {products.map((p: Product) => (
           <li key={p.id} className="border p-4 rounded">
-            <strong>{p.name}</strong> - {p.price}₺
+            <h2 className="text-lg font-semibold">{p.name}</h2>
+            <p>{p.description}</p>
+            <span className="text-sm text-gray-500">{p.price} ₺</span>
           </li>
         ))}
       </ul>
-    </div>
-  )
+    </main>
+  );
 }

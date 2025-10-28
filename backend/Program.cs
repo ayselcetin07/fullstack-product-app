@@ -14,6 +14,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<ProductRepository>();
 builder.Services.AddScoped<ProductService>();
 
+// 🌐 CORS tanımı → frontend erişimi için şart
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Next.js frontend adresi
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 // 🌐 API ve Swagger servisleri
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -30,6 +41,7 @@ if (app.Environment.IsDevelopment())
 
 // 🌍 HTTP pipeline
 app.UseHttpsRedirection();
+app.UseCors("AllowFrontend"); // ✅ CORS middleware aktif edildi
 app.UseAuthorization();
 app.MapControllers();
 
