@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono,Lora, Raleway } from "next/font/google";
+// örneğin layout.tsx veya layout.js içinde
+
+
+
+
 import "./globals.css";
 import { Toaster } from "react-hot-toast"; // ✅ toast bileşeni
 
@@ -11,6 +16,16 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+});
+
+const raleway = Raleway({
+  subsets: ["latin"],
+  variable: "--font-raleway",
 });
 
 export const metadata: Metadata = {
@@ -25,10 +40,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} ${raleway.variable}antialiased`}>
         {children}
         <Toaster /> {/* ✅ toast mesajları burada görünür */}
-      </body>
+      </body> 
     </html>
   );
 }
