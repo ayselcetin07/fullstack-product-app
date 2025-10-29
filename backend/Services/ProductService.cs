@@ -24,7 +24,9 @@ namespace backend.Services
             {
                 Name = dto.Name,
                 Price = dto.Price,
-                Description = dto.Description
+                Description = dto.Description,
+                Category = dto.Category,
+                Quantity = dto.Quantity
             };
 
             return await _repository.CreateAsync(product);

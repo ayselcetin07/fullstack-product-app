@@ -6,7 +6,7 @@ import { Geist, Geist_Mono,Lora, Raleway } from "next/font/google";
 
 
 import "./globals.css";
-import { Toaster } from "react-hot-toast"; // ✅ toast bileşeni
+import { Toaster } from "react-hot-toast"; //  toast bileşeni
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +42,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} ${lora.variable} ${raleway.variable}antialiased`}>
         {children}
-        <Toaster /> {/* ✅ toast mesajları burada görünür */}
+        <Toaster /> {/* toast mesajları burada görünür */}
       </body> 
     </html>
   );

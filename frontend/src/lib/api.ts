@@ -8,6 +8,8 @@ export async function addProduct(data: {
   name: string;
   description?: string;
   price: number;
+  category: string;
+  quantity: number;
 }) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/products`, {
     method: "POST",
