@@ -3,29 +3,54 @@ import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useState } from "react";
 import { addProduct } from "@/lib/api";
+import Link from "next/link";
 
 export default function AddProductPage() {
   const router = useRouter();
 
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState<number>(0);
+  const [price, setPrice] = useState("");
   const [category, setCategory] = useState("");
-  const [quantity, setQuantity] = useState<number>(1); // Başlangıç değeri 1
+  const [quantity, setQuantity] = useState("");
   const [error, setError] = useState("");
+  const [priceError, setPriceError] = useState("");
+  const [quantityError, setQuantityError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setPriceError("");
+    setQuantityError("");
 
-    if (quantity < 1 || price < 0) {
-      setError("Adet en az 1 olmalı, fiyat negatif olamaz");
-      toast.error("Adet en az 1 olmalı, fiyat negatif olamaz");
+    const numericPrice = Number(price);
+    const numericQuantity = Number(quantity);
+
+    let hasError = false;
+
+    if (isNaN(numericPrice) || numericPrice < 1) {
+      setPriceError("Lütfen geçerli bir fiyat giriniz (₺1 ve üzeri).");
+      hasError = true;
+    }
+
+    if (isNaN(numericQuantity) || numericQuantity < 1) {
+      setQuantityError("Lütfen geçerli bir adet giriniz (en az 1 olmalıdır)");
+      hasError = true;
+    }
+
+    if (hasError) {
+      toast.error("Lütfen geçerli fiyat ve adet giriniz");
       return;
     }
 
     try {
-      await addProduct({ name, description, price, category, quantity });
+      await addProduct({
+        name,
+        description,
+        price: numericPrice,
+        category,
+        quantity: numericQuantity,
+      });
       toast.success("Ürün başarıyla eklendi");
       router.push("/products");
     } catch (err) {
@@ -36,35 +61,45 @@ export default function AddProductPage() {
   };
 
   return (
-    <main className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-bold mb-6">Yeni Ürün Ekle</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <main className="py-10 px-6 w-full max-w-2xl mx-auto font-raleway">
+      <div className="flex justify-between items-center mb-10">
+        <h1 className="text-4xl font-bold font-lora text-blue-700">
+          Yeni Ürün Ekle
+        </h1>
+        <Link href="/products">
+          <button className="text-[17px] font-semibold font-lora text-red-500 border border-white px-4 py-2 rounded hover:bg-red-500 hover:text-white hover:border-white transition">
+            Ürün Listesine Dön
+          </button>
+        </Link>
+      </div>
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block font-medium mb-1">Ürün Adı</label>
+          <label className="block text-sm font-medium mb-1">Ürün Adı</label>
           <input
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Açıklama</label>
+          <label className="block text-sm font-medium mb-1">Açıklama</label>
           <textarea
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div>
-          <label className="block font-medium mb-1">Kategori</label>
+          <label className="block text-sm font-medium mb-1">Kategori</label>
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             required
           >
             <option value="">Kategori seçin</option>
@@ -79,34 +114,45 @@ export default function AddProductPage() {
           </select>
         </div>
 
-        <div>
-          <label className="block font-medium mb-1">Adet (minimum 1)</label>
-          <input
-            type="number"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            className="w-full border p-2 rounded"
-            min={1}
-            required
-          />
+        <div className="grid grid-cols-2 gap-6">
+          <div>
+            <label className="block text-sm font-medium mb-1">Adet</label>
+            <input
+              type="text"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
+              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              inputMode="numeric"
+              required
+            />
+            {quantityError && (
+              <p className="text-sm text-red-600 mt-1">{quantityError}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Fiyat (₺)</label>
+            <input
+              type="text"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+            {priceError && (
+              <p className="text-sm text-red-600 mt-1">{priceError}</p>
+            )}
+          </div>
         </div>
 
-        <div>
-          <label className="block font-medium mb-1">Fiyat (₺)</label>
-          <input
-            type="text"
-            value={price.toString()}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            className="w-full border p-2 rounded"
-            required
-          />
-        </div>
-
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-          Ekle
+        <button
+          type="submit"
+          className="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition"
+        >
+          Ürünü Kaydet
         </button>
 
-        {error && <p className="text-red-500 mt-2">{error}</p>}
+        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
       </form>
     </main>
   );
