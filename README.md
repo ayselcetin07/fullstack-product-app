@@ -38,7 +38,10 @@ npm install
 
 .env dosyası içine şunu yaz:
 
-env
+NEXT_PUBLIC_API_URL=http://localhost:5074
+
+
+
 
 4. Uygulamayı çalıştır:
 
